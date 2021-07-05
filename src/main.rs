@@ -1,12 +1,11 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 #[macro_use] extern crate rocket;
 
-use rocket::serde::{Serialize, Deserialize, json::{Json, Value}};
-use rocket::serde::json;
+use rocket::serde::{Serialize, Deserialize, json};
 
 #[derive(Serialize, Deserialize)]
 struct Card {
-    attributes: Vec<Value>,
+    attributes: Vec<json::Value>,
     description: String,
     external_url: String,
     image: String,
@@ -14,7 +13,7 @@ struct Card {
 }
 
 #[get("/api/cards/<token_id>")]
-fn cards(token_id: u8) -> Json<Card> {
+fn cards(token_id: u8) -> json::Json<Card> {
     let data = r#"
     {
         "attributes": [
@@ -58,7 +57,7 @@ fn cards(token_id: u8) -> Json<Card> {
         "name": "acquire.joker.a"
     }"#;
     let c: Card = json::from_str(data).unwrap();
-    Json(c)
+    json::Json(c)
 }
 
 #[launch]
