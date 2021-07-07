@@ -30,7 +30,7 @@ pub struct Card {
     pub deck_id: i32,
 }
 
-// Get or Create NFT Meta Data
+// Get NFT Meta Data by <token_id>
 impl CardEntity {
     pub fn get_by_pk(token_id: u8) -> Result<CardEntity, diesel::result::Error> {
         use crate::schema::cards::dsl::cards;
