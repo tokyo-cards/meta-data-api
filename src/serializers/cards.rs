@@ -1,5 +1,6 @@
-use rocket::serde::{Serialize, Deserialize, json};
 use crate::models::cards::CardEntity;
+use rocket::response::status::NotFound;
+use rocket::serde::{json, Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct CardSerialized {
@@ -7,19 +8,24 @@ pub struct CardSerialized {
     description: String,
     external_url: String,
     image: String,
-    name: String
+    name: String,
 }
 
 impl CardSerialized {
-    pub fn get_by_pk(token_id: u8) -> CardSerialized {
+    pub fn get_by_pk(token_id: u8) -> Result<json::Json<CardSerialized>, NotFound<String>> {
         info!("token_id: {}", token_id);
-        let card = CardEntity::get_by_pk(token_id);
-        CardSerialized {
-            attributes: vec!(),
-            description: card.description,
-            external_url: card.external_url,
-            image: card.image,
-            name: card.name
+        match CardEntity::get_by_pk(token_id) {
+            Ok(card) => {
+                let c = CardSerialized {
+                    attributes: vec![],
+                    description: card.description,
+                    external_url: card.external_url,
+                    image: card.image,
+                    name: card.name,
+                };
+                Ok(json::Json(c))
+            }
+            Err(e) => Err(NotFound(e.to_string())),
         }
     }
 }
