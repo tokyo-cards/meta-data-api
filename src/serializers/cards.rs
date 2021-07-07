@@ -11,8 +11,10 @@ pub struct CardSerialized {
     name: String,
 }
 
+pub type CardResultJSON = Result<json::Json<CardSerialized>, NotFound<String>>;
+
 impl CardSerialized {
-    pub fn get_by_pk(token_id: u8) -> Result<json::Json<CardSerialized>, NotFound<String>> {
+    pub fn get_by_pk(token_id: u8) -> CardResultJSON {
         info!("token_id: {}", token_id);
         match CardEntity::get_by_pk(token_id) {
             Ok(card) => {
